@@ -1,3 +1,4 @@
+
 # Translingua
 **NMT estilo Transformer com atenção hierárquica (local + global), embeddings fatorizados e codificação posicional dinâmica**
 
