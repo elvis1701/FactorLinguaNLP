@@ -75,35 +75,40 @@ O arquivo principal é `translingua.py`, organizado em blocos:
 
 ```mermaid
 flowchart LR
-    A[Texto Fonte] --> B[SentencePiece\nencode + BOS/EOS]
-    B --> C[src: Tensor (B,Ls)]
-    C --> D[TokenEmbedding (fatorizado)]
-    D --> E[PosEnc Dinâmico (1,L,E) + Dropout]
-    E --> F[Encoder x N camadas]
+    A["Texto Fonte"] --> B["SentencePiece encode + BOS/EOS"]
+    B --> C["src: Tensor (B,Ls)"]
+    C --> D["TokenEmbedding (fatorizado)"]
+    D --> E["PosEnc Dinâmico (1,L,E) + Dropout"]
+    E --> F["Encoder x N camadas"]
+    
     subgraph ENCODER
-      F1[Self-Attn Hierárquica\n Local (janela w)\n + Global (full)\n+ Gate treinável]
-      F2[Residual + LayerNorm]
-      F3[FeedForward + Residual + LayerNorm]
-      F --repete N--> F
+      F1["Self-Attn Hierárquica\nLocal (janela w)\n+ Global (full)\n+ Gate treinável"]
+      F2["Residual + LayerNorm"]
+      F3["FeedForward + Residual + LayerNorm"]
+      F --> F1
+      F1 --> F2
+      F2 --> F3
+      F3 --> F
     end
-    F --> G[Memória do Encoder (B,Ls,E)]
+    
+    F --> G["Memória do Encoder (B,Ls,E)"]
 
-    H[Texto Alvo (shifted)] --> I[SentencePiece\nencode + BOS/EOS]
-    I --> J[tgt_in: Tensor (B,Lt)]
-    J --> K[TokenEmbedding (fatorizado)]
-    K --> L[PosEnc Dinâmico + Dropout]
+    H["Texto Alvo (shifted)"] --> I["SentencePiece encode + BOS/EOS"]
+    I --> J["tgt_in: Tensor (B,Lt)"]
+    J --> K["TokenEmbedding (fatorizado)"]
+    K --> L["PosEnc Dinâmico + Dropout"]
 
     subgraph DECODER
-      L --> M[Self-Attn Hierárquica\n (Causal + Janela w)]
-      M --> N[Residual + LayerNorm]
-      N --> O[Cross-Attn\n Q=Decoder, K/V=Mem. Encoder]
-      O --> P[Residual + LayerNorm]
-      P --> Q[FeedForward + Residual + LayerNorm]
+      L --> M["Self-Attn Hierárquica\n(Causal + Janela w)"]
+      M --> N["Residual + LayerNorm"]
+      N --> O["Cross-Attn\nQ=Decoder, K/V=Mem. Encoder"]
+      O --> P["Residual + LayerNorm"]
+      P --> Q["FeedForward + Residual + LayerNorm"]
     end
 
-    Q --> R[Linear(d_model → Vocab_Tgt)]
-    R --> S[Logits → Greedy Decode]
-    S --> T[Texto Traduzido]
+    Q --> R["Linear(d_model → Vocab_Tgt)"]
+    R --> S["Logits → Greedy Decode"]
+    S --> T["Texto Traduzido"]
 ```
 
 **Modificações destacadas**: blocos com _Self-Attn Hierárquica_, _TokenEmbedding (fatorizado)_ e _PosEnc Dinâmico_.
