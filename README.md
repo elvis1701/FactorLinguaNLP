@@ -1,5 +1,8 @@
 
-# Translingua.py é nome do arquivo Python que foi desenvolvido o projeto FactorLinguaNLP.
+# Translingua.py
+
+Translingua.py é nome do arquivo Python que foi desenvolvido o projeto FactorLinguaNLP.
+
 **NMT estilo Transformer com atenção hierárquica (local + global), embeddings fatorizados e codificação posicional dinâmica**
 
 > Este repositório contém uma implementação educacional e extensível de um sistema de tradução neural (seq2seq) no estilo Transformer, com **atenção hierárquica** (janela local + escopo global), **embeddings fatorizados** para reduzir parâmetros e **positional encoding** **dinâmico**. Inclui _dataset_ com BOS/EOS, _collate_ com padding, _label smoothing_, _greedy decoding_, e um loop de treinamento completo em PyTorch.
